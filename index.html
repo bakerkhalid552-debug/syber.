@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="ar">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>مشروع جديد</title>
+    <style>
+      :root {
+        --bg: #0b0b0b;
+        --card: #121212;
+        --text: #eaeaea;
+        --muted: #b3b3b3;
+        --primary: #2563eb;
+        --border: #2a2a2a;
+      }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans", Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        background: var(--bg);
+        color: var(--text);
+        display: grid;
+        place-items: center;
+      }
+      .box {
+        width: min(92vw, 680px);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        background: var(--card);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.45);
+        padding: 28px 24px;
+        text-align: center;
+      }
+      h1 { margin: 0 0 10px; font-size: 28px; }
+      p { margin: 0 0 18px; color: var(--muted); }
+      .btn {
+        display: inline-block;
+        padding: 12px 18px;
+        border-radius: 999px;
+        background: var(--primary);
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+        margin-top: 18px;
+      }
+      .card {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px;
+        text-align: start;
+        background: #151515;
+      }
+      .card h3 { margin: 0 0 8px; font-size: 18px; }
+      .card p { margin: 0; color: var(--muted); font-size: 14px; }
+
+      /* Hacker additions */
+      :root { --neon: #00ff66; }
+      body { display: block; }
+      .box { position: relative; z-index: 1; }
+      #code-rain { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+      .hero { text-align: center; margin-bottom: 10px; }
+      .hero h1 { font-size: 32px; color: var(--neon); text-shadow: 0 0 8px rgba(0,255,102,0.35); }
+      .hero p { color: var(--muted); }
+      .terminal { background: #0a0f0a; border: 1px solid #164216; border-radius: 12px; padding: 12px; margin-top: 16px; }
+      .terminal .term-header { color: var(--neon); font-family: Consolas, "Courier New", monospace; font-weight: bold; margin-bottom: 8px; }
+      .terminal .term-output { font-family: Consolas, "Courier New", monospace; color: #c7f9cc; min-height: 120px; max-height: 220px; overflow-y: auto; background: #0a0f0a; padding: 8px; border-radius: 8px; }
+      .terminal .term-input { width: 100%; margin-top: 8px; padding: 10px 12px; border-radius: 8px; border: 1px solid #164216; background: #0a0f0a; color: #c7f9cc; outline: none; }
+      .tools-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 14px; }
+      .tool-card { border: 1px solid var(--border); border-radius: 12px; padding: 14px; background: #151515; }
+      .tool-card h3 { margin: 0 0 10px; color: var(--neon); }
+      .input-row { display: flex; gap: 8px; align-items: center; }
+      .input-row input { flex: 1; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--border); background: #0f0f0f; color: var(--text); outline: none; }
+      .input-row button { padding: 10px 14px; border-radius: 8px; border: 1px solid var(--neon); background: transparent; color: var(--neon); cursor: pointer; font-weight: 600; }
+      .input-row button:hover { background: var(--neon); color: #000; }
+      .pw-meter { background: #0f0f0f; border-radius: 8px; height: 10px; margin-top: 8px; overflow: hidden; }
+      .pw-bar { height: 100%; width: 0%; transition: width 0.3s ease; background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, var(--neon)); }
+      .pw-label { display: block; margin-top: 6px; color: var(--muted); font-size: 12px; }
+      /* Login Overlay */
+      .login-overlay { position: fixed; inset: 0; display: grid; place-items: center; background: rgba(0,0,0,0.85); z-index: 999; backdrop-filter: blur(2px); }
+      .login-overlay.hidden { opacity: 0; pointer-events: none; transition: opacity .6s ease; }
+      .login-card { width: min(92vw, 440px); border: 1px solid #164216; border-radius: 14px; background: #0c0c0c; padding: 20px; box-shadow: 0 30px 80px rgba(0,255,102,0.18); }
+      .login-card .input-row input { background: #0f0f0f; border: 1px solid var(--border); color: var(--text); }
+      .login-card .input-row button { border-color: var(--neon); color: var(--neon); }
+      .glitch { position: relative; display: inline-block; font-size: 22px; font-weight: 800; color: var(--neon); text-transform: uppercase; letter-spacing: 1px; }
+      .glitch::before, .glitch::after { content: attr(data-text); position: absolute; left: 0; top: 0; color: var(--neon); clip-path: inset(0); }
+      .glitch::before { transform: translate(-1px,-1px); opacity: .65; filter: drop-shadow(0 0 8px rgba(0,255,102,.6)); animation: glitchShift 2s infinite linear; }
+      .glitch::after { transform: translate(1px,1px); opacity: .45; filter: drop-shadow(0 0 6px rgba(0,255,102,.4)); animation: glitchShift 2s infinite linear reverse; }
+      @keyframes glitchShift {
+        0% { clip-path: inset(0 0 85% 0); }
+        10% { clip-path: inset(15% 0 70% 0); }
+        20% { clip-path: inset(35% 0 45% 0); }
+        30% { clip-path: inset(50% 0 30% 0); }
+        40% { clip-path: inset(65% 0 15% 0); }
+        50% { clip-path: inset(80% 0 0 0); }
+        60% { clip-path: inset(60% 0 20% 0); }
+        70% { clip-path: inset(40% 0 40% 0); }
+        80% { clip-path: inset(20% 0 60% 0); }
+        90% { clip-path: inset(5% 0 75% 0); }
+        100% { clip-path: inset(0 0 85% 0); }
+      }
+      /* Start Button */
+      .start-btn {
+        position: relative;
+        display: inline-block;
+        padding: 10px 26px;
+        font-size: 18px;
+        font-weight: 700;
+        color: #0f0;
+        background: transparent;
+        border: 2px solid #0f0;
+        border-radius: 8px;
+        cursor: pointer;
+        text-shadow: 0 0 6px rgba(0,255,0,.7);
+        box-shadow: 0 0 12px rgba(0,255,0,.35), inset 0 0 12px rgba(0,255,0,.25);
+        transition: transform .08s ease, box-shadow .18s ease;
+      }
+
+
+      .start-btn:hover { background: var(--neon); color: #000; }
+      .muted { color: var(--muted); }
+      @keyframes pulse {
+        0%, 100% { box-shadow: 0 0 12px rgba(0,255,102,.35); }
+        50% { box-shadow: 0 0 18px rgba(0,255,102,.75); }
+      }
+
+
+      /* Brand Banner */
+      .brand-banner { max-width: min(92vw, 280px); margin: 8px auto 12px; padding: 8px; background: #0f1010; border: 1px solid #164216; border-radius: 10px; text-align: center; box-shadow: 0 6px 20px rgba(0,255,102,0.1); }
+        .brand-banner img { width: min(80vw, 120px); height: auto; border-radius: 8px; display: inline-block; filter: drop-shadow(0 0 8px rgba(0,255,102,0.2)); background: transparent; }
+        @media (min-width: 700px) { .brand-banner img { width: 100px; } }
+
+    </style>
+  </head>
+  <body>
+    <main class="box" aria-label="مشروع ويب جديد">
+      <div class="hero">
+        <h1>⚡ Hack Me If You Can</h1>
+        <p>موقع تفاعلي آمن لعرض مهارات الأمن السيبراني بشكل احترافي.</p>
+      </div>
+
+      <section class="brand-banner" aria-label="باركود الموقع">
+         <img src="site-qr.png" alt="باركود الموقع - امسح لفتح الصفحة" id="siteQR" loading="eager">
+       </section>
+
+      <section class="tools-grid" aria-label="أدوات تفاعلية">
+        <div class="tool-card" id="email-tool">
+          <h3>📧 فحص الإيميل</h3>
+          <div class="input-row">
+            <input type="email" id="email" placeholder="example@email.com">
+            <button id="btnEmail">تحقق</button>
+          </div>
+          <div class="result" id="email-result"></div>
+        </div>
+        <div class="tool-card" id="pw-tool">
+          <h3>🔑 قوة الباسوورد</h3>
+          <div class="input-row">
+            <input type="password" id="pw" placeholder="اكتب كلمة المرور">
+            <button id="btnPw">فحص</button>
+          </div>
+          <div class="pw-meter"><div class="pw-bar"></div></div>
+          <span class="pw-label"></span>
+          <div class="result" id="pw-result"></div>
+        </div>
+      </section>
+
+      <section class="tools-grid" aria-label="أدوات متقدمة">
+        <div class="tool-card" id="phish-tool">
+          <h3>🕵️ تحليل روابط التصيّد</h3>
+          <div class="input-row">
+            <input type="text" id="phish-url" placeholder="https://example.com/login">
+            <button id="btnPhish">حلّل</button>
+          </div>
+          <div class="risk-meter"><div class="risk-bar"></div></div>
+          <span class="risk-label"></span>
+          <div class="result" id="phish-result"></div>
+        </div>
+        <div class="tool-card" id="notes-tool">
+          <h3>📝 مذكرات مشفّرة (AES-GCM)</h3>
+          <div class="input-row" style="align-items:flex-start">
+            <textarea id="notes" placeholder="اكتب مذكّرتك أو الصق الحمولة المشفّرة" rows="4" style="flex:1"></textarea>
+          </div>
+          <div class="input-row">
+            <input type="password" id="secret" placeholder="كلمة سر قوية">
+            <button id="btnEncrypt">تشفير</button>
+            <button id="btnDecrypt">فك التشفير</button>
+          </div>
+          <div class="result" id="notes-result"></div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+    (function(){
+      var img = document.getElementById('siteQR');
+      var section = document.querySelector('.brand-banner');
+      if (img && section) {
+        img.addEventListener('error', function(){ section.style.display='none'; });
+        if (img.complete && img.naturalWidth === 0) { section.style.display='none'; }
+      }
+    })();
+    </script>
+
+    <script>
+    // Code Rain
+    (function(){
+      const canvas = document.createElement('canvas');
+      canvas.id = 'code-rain';
+      document.body.prepend(canvas);
+      const ctx = canvas.getContext('2d');
+      let width, height, fontSize = 16, columns, drops;
+      const chars = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%*';
+      function resize(){
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+        columns = Math.floor(width / fontSize);
+        drops = Array(columns).fill(0);
+      }
+      resize();
+      window.addEventListener('resize', resize);
+      function draw(){
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+        ctx.fillRect(0,0,width,height);
+        ctx.fillStyle = '#00ff66';
+        ctx.font = fontSize + 'px Consolas, monospace';
+        for (let i=0;i<drops.length;i++){
+          const text = chars[Math.floor(Math.random()*chars.length)];
+          ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+          if (drops[i]*fontSize > height && Math.random() > 0.975) drops[i] = 0;
+          drops[i]++;
+        }
+        requestAnimationFrame(draw);
+      }
+      draw();
+    })();
+
+    // Phishing Analyzer
+    (function(){
+      const btn = document.getElementById('btnPhish');
+      const urlInput = document.getElementById('phish-url');
+      const result = document.getElementById('phish-result');
+      const bar = document.querySelector('.risk-bar');
+      const label = document.querySelector('.risk-label');
+      function analyze(urlStr){
+        const flags = [];
+        let score = 0; let u;
+        try { u = new URL(urlStr); } catch(e) { flags.push('صيغة رابط غير صالحة'); return {score: 80, level:'مرتفع', flags}; }
+        const host = u.hostname || '';
+        const path = (u.pathname || '') + (u.search || '') + (u.hash || '');
+        const isHttp = u.protocol === 'http:';
+        const hasAt = urlStr.includes('@');
+        const isIP = /^[0-9.]+$/.test(host) || /^\[[0-9a-fA-F:]+\]$/.test(host);
+        const isPuny = host.startsWith('xn--') || host.includes('.xn--');
+        const nonAscii = /[^\x20-\x7E]/.test(host);
+        const hyphens = (host.match(/-/g)||[]).length;
+        const subCount = host.split('.').length - 1;
+        const tld = host.split('.').pop().toLowerCase();
+        const longDomain = host.length > 30;
+        const suspiciousTlds = ['tk','ml','ga','cf','gq'];
+        const keywords = /(login|verify|update|secure|account|bank|paypal|icloud|confirm|signin)/i.test(urlStr);
+        if (isHttp) { score += 25; flags.push('الاتصال غير آمن (HTTP)'); }
+        if (hasAt) { score += 20; flags.push('وجود @ في الرابط'); }
+        if (isIP) { score += 15; flags.push('استخدام عنوان IP بدلًا من نطاق'); }
+        if (isPuny || nonAscii) { score += 20; flags.push('نطاق IDN قد يحتوي تشابه حروف'); }
+        if (hyphens > 3) { score += 10; flags.push('عدد كبير من الشرطات في النطاق'); }
+        if (subCount > 3) { score += 10; flags.push('عدد زائد من النطاقات الفرعية'); }
+        if (longDomain) { score += 10; flags.push('نطاق طويل بشكل غير معتاد'); }
+        if (suspiciousTlds.includes(tld)) { score += 15; flags.push('نطاق من نهاية TLD منخفضة الثقة'); }
+        if (keywords) { score += 10; flags.push('كلمات حساسة في المسار/المعلمات'); }
+        const lenPath = path.length;
+        if (lenPath > 60) { score += 5; flags.push('مسار طويل'); }
+        score = Math.min(100, score);
+        const level = score >= 60 ? 'مرتفع' : score >= 35 ? 'متوسط' : 'منخفض';
+        return { score, level, flags, host };
+      }
+      if (btn) {
+        btn.addEventListener('click', function(){
+          const urlStr = (urlInput.value || '').trim();
+          if (!urlStr) { result.textContent = '❌ الرجاء إدخال رابط'; bar.style.width='0%'; label.textContent=''; return; }
+          const a = analyze(urlStr);
+          bar.style.width = a.score + '%';
+          label.textContent = 'مستوى المخاطرة: ' + a.level + ' (' + a.score + '%)';
+          result.innerHTML = (a.flags.length ? 'علامات: ' + a.flags.map(s => '• ' + s).join(' ') : 'لا توجد مؤشرات خطيرة واضحة.');
+        });
+      }
+    })();
+
+    // Secure Notes AES-GCM
+    (function(){
+      const notes = document.getElementById('notes');
+      const secret = document.getElementById('secret');
+      const btnEnc = document.getElementById('btnEncrypt');
+      const btnDec = document.getElementById('btnDecrypt');
+      const res = document.getElementById('notes-result');
+      function toBase64(bytes){ return btoa(String.fromCharCode(...bytes)); }
+      function fromBase64(b64){ const bin = atob(b64); const bytes = new Uint8Array(bin.length); for (let i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i); return bytes; }
+      async function deriveKey(pass, salt){
+        const enc = new TextEncoder();
+        const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(pass), 'PBKDF2', false, ['deriveKey']);
+        return crypto.subtle.deriveKey({ name:'PBKDF2', salt, iterations: 100000, hash:'SHA-256' }, keyMaterial, { name:'AES-GCM', length:256 }, false, ['encrypt','decrypt']);
+      }
+      btnEnc && btnEnc.addEventListener('click', async function(){
+        const text = (notes.value || '');
+        const pass = (secret.value || '');
+        if (!text || !pass) { res.textContent = '❌ أدخل النص وكلمة السر'; return; }
+        const salt = crypto.getRandomValues(new Uint8Array(16));
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const key = await deriveKey(pass, salt);
+        const enc = new TextEncoder();
+        const cipher = await crypto.subtle.encrypt({ name:'AES-GCM', iv }, key, enc.encode(text));
+        const payload = { algo:'AES-GCM', s: toBase64(salt), v: toBase64(iv), c: toBase64(new Uint8Array(cipher)) };
+        res.textContent = JSON.stringify(payload);
+      });
+      btnDec && btnDec.addEventListener('click', async function(){
+        let pass = (secret.value || '');
+        let payloadText = (notes.value || '');
+        try {
+          const payload = JSON.parse(payloadText);
+          const salt = fromBase64(payload.s);
+          const iv = fromBase64(payload.v);
+          const cipherBytes = fromBase64(payload.c);
+          const key = await deriveKey(pass, salt);
+          const plain = await crypto.subtle.decrypt({ name:'AES-GCM', iv }, key, cipherBytes);
+          const dec = new TextDecoder().decode(plain);
+          res.textContent = dec;
+        } catch (e) {
+          res.textContent = '🚫 فشل فك التشفير. تأكد من البنية وكلمة السر.';
+        }
+      });
+    })();
+
+    // Email
+    (function(){
+      const btn = document.getElementById('btnEmail');
+      const resEl = document.getElementById('email-result');
+      if (btn) {
+        btn.addEventListener('click', function(){
+          const email = (document.getElementById('email').value || '').trim();
+          if (!email) { resEl.textContent = '❌ الرجاء إدخال بريد إلكتروني'; return; }
+          const [localPart='', domain=''] = email.split('@');
+          const basicFormat = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+          const localValid = /^(?![.])(?!.*[.]{2})[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]{1,64}(?<![.])$/.test(localPart);
+          const domainValid = /^(?=.{1,255}$)([A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)(\.[A-Za-z0-9]([A-Za-z0-9-]{0,61}[A-Za-z0-9])?)+$/.test(domain);
+          const isValid = basicFormat && localValid && domainValid;
+          resEl.textContent = isValid ? '✅ الإيميل يبدو صالحًا' : '❌ صيغة الإيميل غير صحيحة';
+        });
+      }
+    })();
+
+    // Password
+    (function(){
+      const btn = document.getElementById('btnPw');
+      const bar = document.querySelector('.pw-bar');
+      const label = document.querySelector('.pw-label');
+      const res = document.getElementById('pw-result');
+      function analyzePassword(pw){
+        let score = 0;
+        const hasLower = /[a-z]/.test(pw);
+        const hasUpper = /[A-Z]/.test(pw);
+        const hasDigit = /\d/.test(pw);
+        const hasSymbol = /[^A-Za-z0-9]/.test(pw);
+        const lengthGood = pw.length >= 12;
+        score += (hasLower?1:0) + (hasUpper?1:0) + (hasDigit?1:0) + (hasSymbol?1:0);
+        if (lengthGood) score += 2;
+        if (/1234|qwerty|password|admin/i.test(pw)) score -= 2;
+        const strength = score >= 5 ? 'قوية' : score >= 3 ? 'متوسطة' : 'ضعيفة';
+        return { score: Math.max(0, Math.min(score/6, 1)), strength };
+      }
+      if (btn) {
+        btn.addEventListener('click', function(){
+          const pw = document.getElementById('pw').value || '';
+          if (!pw) { res.textContent = '❌ الرجاء إدخال كلمة المرور'; bar.style.width='0%'; label.textContent=''; return; }
+          const a = analyzePassword(pw);
+          const percent = Math.round(a.score * 100);
+          bar.style.width = percent + '%';
+          label.textContent = 'القوة: ' + a.strength + ' (' + percent + '%)';
+          res.textContent = a.score >= 0.5 ? '✅ كلمة المرور ' + a.strength : '❌ كلمة المرور ' + a.strength;
+        });
+      }
+    })();
+
+      </script>
+      <!-- Login Overlay -->
+     <div class="login-overlay" id="loginOverlay" aria-label="واجهة البدء">
+       <div class="login-card" style="text-align:center">
+    <div class="glitch" data-text="START">START</div>
+    <p class="muted">اضغط START للدخول إلى الموقع</p>
+    <button class="start-btn" id="btnStart">START</button>
+    <small class="muted" style="display:block;margin-top:14px">عرض تجريبي محلي.</small>
+  </div>
+     </div>
+     <script>
+     (function(){
+       const overlay = document.getElementById('loginOverlay');
+       const btnStart = document.getElementById('btnStart');
+       if (!overlay || !btnStart) return;
+       btnStart.addEventListener('click', function(){
+         overlay.classList.add('hidden');
+         setTimeout(function(){ overlay.remove(); }, 600);
+       });
+       document.addEventListener('keydown', function(e){
+         if (e.key === 'Enter' && document.getElementById('loginOverlay')) btnStart.click();
+       });
+     })();
+     </script>
+  <footer style="position:fixed;left:0;bottom:0;width:100%;z-index:9999" aria-label="تذييل الموقع">
+    <div style="max-width:1200px;margin:0 auto;padding:8px 12px;text-align:center;font-family:'Courier New',monospace;font-size:13px;color:#aef;background:rgba(0,0,0,0.6);border-top:1px solid rgba(0,255,128,0.35);backdrop-filter:blur(2px)">
+      المطور بكر خالد خليل
+    </div>
+  </footer>
+  </body>
+</html>
